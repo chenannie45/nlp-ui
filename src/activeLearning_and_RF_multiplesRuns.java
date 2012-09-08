@@ -65,7 +65,7 @@ public class activeLearning_and_RF_multiplesRuns {
 
 	public static HashMap<Integer, HashMap<Integer, Double> > ne_feature_logpmi;
 	public static HashMap<Integer, String> index_ne;
-	public static HashMap<String, Integer> cityName2Index;
+	public static HashMap<String, Integer> Name2Index;
 	public static HashMap<Integer, String> index_feature;
 	public static HashSet<String> stop_words;
 
@@ -118,7 +118,7 @@ public class activeLearning_and_RF_multiplesRuns {
 
 	public static void load_goldenset_seeds(String filename, String[] neNames) {
 		goldenset = new HashSet();
-		cityName2Index = new HashMap<String,Integer>();
+		
 
 		// seeds = (ArrayList<Integer>[])new ArrayList[num_of_methods];
 		// set_wrong = (ArrayList<Integer>[])new ArrayList[num_of_methods];
@@ -139,14 +139,7 @@ public class activeLearning_and_RF_multiplesRuns {
 			while((str_line = br.readLine())!=null) {
 				String [] items = str_line.split("\t");
 				int index = Integer.parseInt(items[0]);
-				////the beginning of index and city_names
-				if(items.length > 1){
-					String ne = items[1];
-					if(ne != null){
-						cityName2Index.put(ne, index);
-					}
-
-				}			
+			
 				goldenset.add(index);
 							
 			}
@@ -154,7 +147,7 @@ public class activeLearning_and_RF_multiplesRuns {
 			
 			///set specified seeds
 			for(int i =0; i < neNames.length; i++){
-				Integer theSeedIndex = findCity(neNames[i]);
+				Integer theSeedIndex = findNE(neNames[i]);
 				for(int imtds = 0; imtds < num_of_methods; imtds++){
 					seeds[imtds].add(theSeedIndex);
 				}
@@ -187,6 +180,7 @@ public class activeLearning_and_RF_multiplesRuns {
 
 	public static void load_index_ne(String filename) {
 		index_ne = new HashMap();
+		Name2Index = new HashMap<String,Integer>();
 
 		try {
 			FileInputStream fstream = new FileInputStream(filename);
@@ -199,9 +193,12 @@ public class activeLearning_and_RF_multiplesRuns {
 				String ne = items[0];
 				int index = Integer.parseInt(items[1]);
 				index_ne.put(index, ne);
+								
+				Name2Index.put(ne, index);
+							
 			}
 
-			System.out.println("finished reading cityName");
+			System.out.println("finished reading entities' name");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1002,8 +999,10 @@ public class activeLearning_and_RF_multiplesRuns {
 		Collections.sort(words_sim, Collections.reverseOrder());
 
 		for(Ne_candidate ne : words_sim) {
-			if(ne.sim >= thres_candidate_pool)
+			if(ne.sim >= thres_candidate_pool){
+				candidate_pool.add(ne.iNE);
 				out_list.write(ne.iNE + "\t" + index_ne.get(ne.iNE) + "\t" + ne.sim + "\n");
+			}
 			else
 				break;
 		}
@@ -2008,23 +2007,12 @@ public class activeLearning_and_RF_multiplesRuns {
 				out_prec.write("\n");
 			}
 
-			// load candidate pool
+			// load candidate pool, firt iteration of the code
 			if(candidate_pool.isEmpty()) {
-				String fn_candidate_pool = file_goldenset + ".pool";
-				File file_candidates = new File(fn_candidate_pool);
-				if(file_candidates.exists()) {
-					BufferedReader br1 = new BufferedReader(new FileReader(fn_candidate_pool));
-					while ((str_line = br1.readLine()) != null) {
-						String [] items = str_line.split("\t");
-						candidate_pool.add(Integer.parseInt(items[0]));
-					}
-					br1.close();
-				}
-				else {
-					ArrayList<Ne_candidate> vec_name1_1 = sim_round(round, 1, 0, file_output);
-					ArrayList<Ne_candidate> vec_name1_2 = sim_round(round, 2, 0, file_output);
-					get_combine_ne_list(vec_name1_1, vec_name1_2);
-				}
+
+				ArrayList<Ne_candidate> vec_name1_1 = sim_round(round, 1, 0, file_output);
+				ArrayList<Ne_candidate> vec_name1_2 = sim_round(round, 2, 0, file_output);
+				get_combine_ne_list(vec_name1_1, vec_name1_2);
 			}
 
 			// if type = 1, add random corrected into seed
@@ -2334,21 +2322,21 @@ public class activeLearning_and_RF_multiplesRuns {
 	
 
 	
-	public static Integer findCity(String inputName){
+	public static Integer findNE(String inputName){
 		
 		String formatName = inputName.replace(' ', '_');
 		formatName = formatName.toLowerCase();
-		Integer theIndex = cityName2Index.get(formatName);
+		Integer theIndex = Name2Index.get(formatName);
 		int distance = 100;
 		if (theIndex == null){
-			Iterator<String> cityIterator = cityName2Index.keySet().iterator();
-			while(cityIterator.hasNext()){
-				String curCity = cityIterator.next();
+			Iterator<String> nameIternator = Name2Index.keySet().iterator();
+			while(nameIternator.hasNext()){
+				String curCity = nameIternator.next();
 				LevenshteinDistance lDistance = new LevenshteinDistance();
 				int curDist = lDistance.LD(formatName,curCity);	
 				if(curDist < distance){
 					distance = curDist;
-					theIndex = cityName2Index.get(curCity);
+					theIndex = Name2Index.get(curCity);
 				}
 			}									
 			
