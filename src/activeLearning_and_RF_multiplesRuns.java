@@ -1270,12 +1270,18 @@ public class activeLearning_and_RF_multiplesRuns {
 
 		ArrayList<Integer> top1 = new ArrayList<Integer>();
 		ArrayList<Integer> top2 = new ArrayList<Integer>();
-		for(int i=0; i<goldenset.size()-seeds[2].size(); i++) {
+		
+		int searchScope = vec_name1_1.size();
+		if(searchScope > vec_name1_2.size()){
+			searchScope = vec_name1_2.size();
+		}
+		
+		for(int i=0; i<searchScope-seeds[2].size(); i++) {
 			top1.add(vec_name1_1.get(i).iNE);
 			top2.add(vec_name1_2.get(i).iNE);
 		}
 
-		for(int i=0; i<goldenset.size()-seeds[2].size(); i++) {
+		for(int i=0; i<searchScope-seeds[2].size(); i++) {
 			int name1 = top1.get(i);
 			int name2 = top2.get(i);
 
@@ -1296,7 +1302,13 @@ public class activeLearning_and_RF_multiplesRuns {
 	public static HashMap<Integer, Integer> get_pos_candidate(ArrayList<Ne_candidate> vect_name1_1,ArrayList<Ne_candidate> vect_name1_2){
 		HashMap<Integer, Integer> cand_list = new HashMap<Integer,Integer>();
 		ArrayList<Integer> judge_list = new ArrayList<Integer>();
-		for(int i = 0; i < goldenset.size(); i++){
+		
+		int searchScope = vect_name1_1.size();
+		if(searchScope > vect_name1_2.size()){
+			searchScope = vect_name1_2.size();
+		}
+		
+		for(int i = 0; i < searchScope; i++){
 			Ne_candidate nec1 = vect_name1_1.get(i);
 			if(judge_list.contains(nec1.iNE)||seeds[2].contains(nec1.iNE)||positive_pool.contains(nec1.iNE)){
 				continue;
@@ -2035,12 +2047,7 @@ public class activeLearning_and_RF_multiplesRuns {
 			 */
 			
 			
-///comment to disable other methods
-
-			///instead only use method 3
-			if(vec_name3_1.size() < goldenset.size() || vec_name3_2.size() < goldenset.size())
-				return;
-			
+	
 
 			//			Collections.sort(vec_name3, Collections.reverseOrder());
 			Collections.sort(vec_name3_1, Collections.reverseOrder());
