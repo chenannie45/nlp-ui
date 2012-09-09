@@ -1285,11 +1285,11 @@ public class activeLearning_and_RF_multiplesRuns {
 			int name1 = top1.get(i);
 			int name2 = top2.get(i);
 
-			if(!top2.contains(name1) && !set_wrong[2].contains(name1)&&!negative_pool.contains(name1)) {
+			if(!top2.contains(name1) && !set_wrong[2].contains(name1)&&!negative_pool.contains(name1)&&!positive_pool.contains(name1)) {
 				cand_list.put(name1, 0);
 			}
 
-			if(!top1.contains(name2) && !set_wrong[2].contains(name2)&&!negative_pool.contains(name2)) {
+			if(!top1.contains(name2) && !set_wrong[2].contains(name2)&&!negative_pool.contains(name2)&&!positive_pool.contains(name2)) {
 				cand_list.put(name2,0);
 			}
 			if(cand_list.size() >= 10){
@@ -1310,14 +1310,14 @@ public class activeLearning_and_RF_multiplesRuns {
 		
 		for(int i = 0; i < searchScope; i++){
 			Ne_candidate nec1 = vect_name1_1.get(i);
-			if(judge_list.contains(nec1.iNE)||seeds[2].contains(nec1.iNE)||positive_pool.contains(nec1.iNE)){
+			if(judge_list.contains(nec1.iNE)||seeds[2].contains(nec1.iNE)||positive_pool.contains(nec1.iNE)||negative_pool.contains(nec1.iNE)){
 				continue;
 			}
 			judge_list.add(nec1.iNE);
 			cand_list.put(nec1.iNE,0);
 			
 			Ne_candidate nec2 = vect_name1_2.get(i);
-			if(judge_list.contains(nec2.iNE)||seeds[2].contains(nec2.iNE)||positive_pool.contains(nec2.iNE)){
+			if(judge_list.contains(nec2.iNE)||seeds[2].contains(nec2.iNE)||positive_pool.contains(nec2.iNE)||negative_pool.contains(nec2.iNE)){
 				continue;
 			}
 			judge_list.add(nec2.iNE);
