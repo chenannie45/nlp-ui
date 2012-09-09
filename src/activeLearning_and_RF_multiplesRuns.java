@@ -13,9 +13,6 @@ import java.lang.*;
 import javax.swing.JEditorPane;
 
 
-//import DQE.Ne_candidate;
-//import DQE.Weight;
-
 public class activeLearning_and_RF_multiplesRuns {
 	
 	/*
@@ -120,9 +117,6 @@ public class activeLearning_and_RF_multiplesRuns {
 		goldenset = new HashSet();
 		
 
-		// seeds = (ArrayList<Integer>[])new ArrayList[num_of_methods];
-		// set_wrong = (ArrayList<Integer>[])new ArrayList[num_of_methods];
-
 		seeds = new ArrayList[num_of_methods];
 		set_wrong = new ArrayList[num_of_methods];
 		for(int i=0; i<num_of_methods; i++) {
@@ -153,24 +147,6 @@ public class activeLearning_and_RF_multiplesRuns {
 				}
 			}
 
-			// random select seeds;
-	/*		for(int i=0; i < max_seeds; i++) {
-				int randomIndex = generator.nextInt(100000) % goldenset.size();
-
-				int ne_index = 0;
-				int offset = 0;
-				Iterator<Integer> it = goldenset.iterator();
-				while(it.hasNext()) {
-					ne_index = it.next();
-					if(offset == randomIndex)
-						break;
-
-					offset++;
-				}
-
-				for(int imtds=0; imtds<num_of_methods; imtds++)
-					seeds[imtds].add(ne_index);
-			}*/
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -2060,82 +2036,19 @@ public class activeLearning_and_RF_multiplesRuns {
 			
 			
 ///comment to disable other methods
-/*
-			if(vec_name1_1.size() < goldenset.size() || vec_name1_2.size() < goldenset.size()
-					|| vec_name2_1.size() < goldenset.size() || vec_name2_2.size() < goldenset.size()
-					|| vec_name3_1.size() < goldenset.size() || vec_name3_2.size() < goldenset.size() 
-					|| vec_name4_1.size() < goldenset.size() || vec_name4_2.size() < goldenset.size()
-					|| vec_name5_1.size() < goldenset.size() || vec_name5_2.size() < goldenset.size()
-					|| vec_name6_1.size() < goldenset.size() || vec_name6_2.size() < goldenset.size() )
-				return;
-*/
+
 			///instead only use method 3
 			if(vec_name3_1.size() < goldenset.size() || vec_name3_2.size() < goldenset.size())
 				return;
 			
 
-
-			//			Collections.sort(vec_name1, Collections.reverseOrder());
-//			Collections.sort(vec_name1_1, Collections.reverseOrder());
-//			Collections.sort(vec_name1_2, Collections.reverseOrder());
-
-			//			Collections.sort(vec_name2, Collections.reverseOrder());
-//			Collections.sort(vec_name2_1, Collections.reverseOrder());
-//			Collections.sort(vec_name2_2, Collections.reverseOrder());
-
 			//			Collections.sort(vec_name3, Collections.reverseOrder());
 			Collections.sort(vec_name3_1, Collections.reverseOrder());
 			Collections.sort(vec_name3_2, Collections.reverseOrder());
 
-			//			Collections.sort(vec_name4, Collections.reverseOrder());
-//			Collections.sort(vec_name4_1, Collections.reverseOrder());
-//			Collections.sort(vec_name4_2, Collections.reverseOrder());
 
-			//			Collections.sort(vec_name5, Collections.reverseOrder());
-//			Collections.sort(vec_name5_1, Collections.reverseOrder());
-//			Collections.sort(vec_name5_2, Collections.reverseOrder());
-
-//			Collections.sort(vec_name6_1, Collections.reverseOrder());
-//			Collections.sort(vec_name6_2, Collections.reverseOrder());
-
-			/*
-			Collections.sort(vec_name1_1);
-			Collections.sort(vec_name1_2);
-
-			Collections.sort(vec_name2_1);
-			Collections.sort(vec_name2_2);
-
-			Collections.sort(vec_name3_1);
-			Collections.sort(vec_name3_2);
-			 */
-
-			//			HashMap<Integer, Double> map_p1 = get_precision_singleView(vec_name1, file_output, round, 1);		
-//			HashMap<Integer, Double> map_p1 = get_precision_2view(vec_name1_1, vec_name1_2, file_output, round, 1);
-			//			HashMap<Integer, Double> map_p2 = get_precision_singleView(vec_name2, file_output, round, 2);
-//			HashMap<Integer, Double> map_p2 = get_precision_2view(vec_name2_1, vec_name2_2, file_output, round, 2);
-			//			HashMap<Integer, Double> map_p3 = get_precision_singleView(vec_name3, file_output, round, 3);
 			HashMap<Integer, Double> map_p3 = get_precision_2view(vec_name3_1, vec_name3_2, file_output, round, 3);
-			//			HashMap<Integer, Double> map_p4 = get_precision_singleView(vec_name4, file_output, round, 4);
-//			HashMap<Integer, Double> map_p4 = get_precision_2view(vec_name4_1, vec_name4_2, file_output, round, 4);
-			//			HashMap<Integer, Double> map_p5 = get_precision_singleView(vec_name5, file_output, round, 5);
-//			HashMap<Integer, Double> map_p5 = get_precision_2view(vec_name5_1, vec_name5_2, file_output, round, 5);
 
-//			HashMap<Integer, Double> map_p6 = get_precision_2view(vec_name6_1, vec_name6_2, file_output, round, 6);
-
-
-			//			HashMap<Integer, Double> map_p1 = get_precision(vec_name1_1, vec_name1_2, file_output, round, 1);
-			//			HashMap<Integer, Double> map_p2 = get_precision(vec_name2_1, vec_name2_2, file_output, round, 2);
-			//			HashMap<Integer, Double> map_p3 = get_precision(vec_name3_1, vec_name3_2, file_output, round, 3);
-
-			// if type = 1, add random corrected into seed
-			// get_pos_random_2view
-			//			name_correct[0] = get_pos_random_singleView(1, vec_name1);
-//			name_correct[0] = get_pos_random_2view(1, vec_name1_1, vec_name1_2);
-//			seeds[0].add(name_correct[0]);
-			// if type = 2, infoItem (add informative seed into seed set)
-//			name_correct[1] = get_pos_maxDim_2view(2, vec_name2_1, vec_name2_2);
-//			seeds[1].add(name_correct[1]);
-			
 			
 			// if type = 3, RF (add informative seed into seed set, penalize weight for informative incorrect seed)
 			///////name_correct[2] = get_pos_maxDim_2view(3, vec_name3_1, vec_name3_2);
@@ -2149,12 +2062,7 @@ public class activeLearning_and_RF_multiplesRuns {
 				int id = it.next();
 				System.out.print(index_ne.get(id)+",");
 				System.out.println("hint:"+ is_in_golden_strict(id));
-//				
-//				int mark = scanner.nextInt();
-//				if(mark > 0){
-//					posCands.remove(id);
-//					posCands.put(id, 1);
-//				}
+
 			}
 			
 			///find wrong set
@@ -2167,12 +2075,7 @@ public class activeLearning_and_RF_multiplesRuns {
 				int id = neg_it.next();
 				System.out.print(index_ne.get(id)+",");
 				System.out.println("hint:"+ is_in_golden_strict(id));
-//				
-//				int mark = scanner.nextInt();
-//				if(mark > 0){
-//					negCands.remove(id);
-//					negCands.put(id, 1);
-//				}
+
 			}
 			
 			//positive
@@ -2264,40 +2167,7 @@ public class activeLearning_and_RF_multiplesRuns {
 			
 			
 			
-			
-			// if type = 4, FMM (pantel. only weight=0 for incorrect seed)
-  //			name_correct[3] = get_pos_maxDim_2view(4, vec_name4_1, vec_name4_2);
-  //			seeds[3].add(name_correct[3]);
 
-			/* Bonan : this may cause their performance to be very poor in my ACL submission
-			 */
-//			name_wrong[3] = get_neg_maxDim_disagree(4, vec_name4_1, vec_name4_2);
-			//			name_wrong[3] = get_neg_first_disagree(4, vec_name4_1, vec_name4_2);
-//			set_wrong[3].add(name_wrong[3]);
-			// if type == 5, bootstrapping, add the most confident item back to seed set
-//			name_correct[4] = get_most_confident_bootstrapping_2view(5, vec_name5_1, vec_name5_2);
-			//			name_correct[4] = get_most_confident_bootstrapping_singleView(5, vec_name5);
-//			seeds[4].add(name_correct[4]);
-
-//			name_correct[5] = get_first_correct_2view(6, vec_name6_1, vec_name6_2);
-			//			name_correct[4] = get_most_confident_bootstrapping_singleView(5, vec_name5);
-//			seeds[5].add(name_correct[5]);
-			/*
-			name_correct1 = get_pos_random(1, vec_name1_1, vec_name1_2);
-			seeds[0].add(name_correct1);
-			name_correct2 = get_pos_maxDim(2, vec_name2_1, vec_name2_2);
-			seeds[1].add(name_correct2);
-			name_correct3 = get_pos_maxDim(3, vec_name3_1, vec_name3_2);
-			seeds[2].add(name_correct3);
-
-			name_wrong1 = get_neg_maxDim(1, vec_name1_1, vec_name1_2);
-			set_wrong[0].add(name_wrong1);
-			name_wrong2 = get_neg_maxDim(2, vec_name2_1, vec_name2_2);
-			set_wrong[1].add(name_wrong2);
-			name_wrong3 = get_neg_maxDim(3, vec_name3_1, vec_name3_2);
-			set_wrong[2].add(name_wrong3);
-			 */
-//			Iterator<Integer> it_map = map_p1.keySet().iterator();
 			Iterator<Integer> it_map = map_p3.keySet().iterator();
 			while(it_map.hasNext()) {
 				int rank = it_map.next();
@@ -2480,9 +2350,6 @@ public class activeLearning_and_RF_multiplesRuns {
 		System.out.println("# " + file_goldenset);
 		
 
-//		loadFiles();
-//		String[] neNameStrings = {"nairobi", "ashkhabad", "honiara", "magas", "paris", "bamako"};
-//		String[] neNameStrings = {"Washington D.C.","Beijing","Berlin","London","Tokyo","Paris"};
 		load_goldenset_seeds(file_goldenset,neNameStrings);
 
 
