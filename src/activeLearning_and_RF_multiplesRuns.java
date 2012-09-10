@@ -2041,6 +2041,8 @@ public class activeLearning_and_RF_multiplesRuns {
 				}
 					
 			}
+			System.out.println("the size of candidate pool is " + candidate_pool.size());
+			System.out.println("the size of candidate feature pool is " + candidate_featurePool.size());
 
 			// if type = 1, add random corrected into seed
 			// if type = 2, infoItem (add informative seed into seed set)
