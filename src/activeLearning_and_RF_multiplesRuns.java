@@ -90,6 +90,10 @@ public class activeLearning_and_RF_multiplesRuns {
 	public static ArrayList<Ne_candidate> negative_cand;
 	public static HashSet<Integer> positive_pool = new HashSet<Integer>();
 	public static HashSet<Integer> negative_pool = new HashSet<Integer>();
+	
+	//for inverted index
+	public static HashMap<Integer, HashSet<Integer>> fid_ne;
+	public static HashSet<Integer> candidate_featurePool;
 
 	public static void load_stop_words(String filename) {
 		stop_words = new HashSet();
@@ -220,6 +224,7 @@ public class activeLearning_and_RF_multiplesRuns {
 
 	public static void load_ne_feature_logpmi(String filename) throws InterruptedException {
 		ne_feature_logpmi = new HashMap();
+		fid_ne = new HashMap();
 
 		//		feature_all = new HashSet();
 		feature1 = new HashSet();
@@ -286,6 +291,17 @@ public class activeLearning_and_RF_multiplesRuns {
 						ne_feature_logpmi.get(iNE).put(iFeature, logpmi);
 					}
 				}
+				
+				///initial the feature index and NE hashmap
+				if(!fid_ne.containsKey(iFeature)){
+					HashSet<Integer> hs = new HashSet();
+					hs.add(iNE);
+					fid_ne.put(iFeature, hs);
+				}
+				else{
+					fid_ne.get(iFeature).add(iNE);
+				}
+				
 
 				if(!feature1.contains(iFeature) && !feature2.contains(iFeature)) {
 
@@ -1910,6 +1926,19 @@ public class activeLearning_and_RF_multiplesRuns {
 
 		return name_wrong;
 	}
+	
+	
+	public static void expand_candidate_pool(Integer name){
+		Iterator<Integer> fIterator	= ne_feature_logpmi.get(name).keySet().iterator();
+		while(fIterator.hasNext()){
+			int feature = fIterator.next();
+			if(candidate_featurePool.contains(feature)){
+				continue;
+			}
+			candidate_featurePool.add(feature);
+			candidate_pool.addAll(fid_ne.get(feature));
+		}
+	}
 
 	public static void run_algorithms(String file_output) throws IOException {
 		// R-precision
@@ -1995,12 +2024,22 @@ public class activeLearning_and_RF_multiplesRuns {
 				out_prec.write("\n");
 			}
 
-			// load candidate pool, firt iteration of the code
+			// load candidate pool, first iteration of the code, only load the relevant NE of seed sets 
 			if(candidate_pool.isEmpty()) {
 
-				ArrayList<Ne_candidate> vec_name1_1 = sim_round(round, 1, 0, file_output);
-				ArrayList<Ne_candidate> vec_name1_2 = sim_round(round, 2, 0, file_output);
-				get_combine_ne_list(vec_name1_1, vec_name1_2);
+				for (Integer ne_name: seeds[2]){
+					expand_candidate_pool(ne_name);
+				}
+				
+			}
+			else{///add the newly added name_correct and name_wrong 's relevant NE
+				if(name_correct[2]!=-1){
+					expand_candidate_pool(name_correct[2]);
+				}
+				if(name_wrong[2]!=-1){
+					expand_candidate_pool(name_wrong[2]);
+				}
+					
 			}
 
 			// if type = 1, add random corrected into seed
@@ -2155,14 +2194,16 @@ public class activeLearning_and_RF_multiplesRuns {
 			}
 			
 			int tmp = get_max_from_user(posCands,1);
+			name_correct[2] = tmp;///pick out from "if", for further use
 			if(tmp!=-1){
-				name_correct[2] = tmp;
+				
 				seeds[2].add(name_correct[2]);
 			}
 			
 			tmp = get_max_from_user(negCands,0);
+			name_wrong[2] = tmp;
 			if(tmp!=-1){
-				name_wrong[2] = tmp;
+				
 				set_wrong[2].add(name_wrong[2]);
 			}
 			
@@ -2317,6 +2358,7 @@ public class activeLearning_and_RF_multiplesRuns {
 		long start = System.currentTimeMillis();
 		
 		candidate_pool = new HashSet<Integer>();
+		candidate_featurePool = new HashSet<Integer>();
 
 		test_rank_features = new ArrayList();
 
