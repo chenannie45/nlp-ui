@@ -94,6 +94,11 @@ public class activeLearning_and_RF_multiplesRuns {
 	//for inverted index
 	public static HashMap<Integer, HashSet<Integer>> fid_ne;
 	public static HashSet<Integer> candidate_featurePool;
+	public static HashSet<Integer> shared_feature = new HashSet<>();
+	
+	public static File staticFile = new File("statstic_NLP_running");
+	public static BufferedWriter staticBuffer;
+	
 
 	public static void load_stop_words(String filename) {
 		stop_words = new HashSet();
@@ -1928,15 +1933,25 @@ public class activeLearning_and_RF_multiplesRuns {
 	}
 	
 	
-	public static void expand_candidate_pool(Integer name){
+	public static void expand_candidate_pool(Integer name) throws IOException{
 		Iterator<Integer> fIterator	= ne_feature_logpmi.get(name).keySet().iterator();
 		while(fIterator.hasNext()){
 			int feature = fIterator.next();
 			if(candidate_featurePool.contains(feature)){
+				if(!shared_feature.contains(feature)){
+					System.out.println("the shared feature is " + feature + ": " + index_feature.get(feature));
+					shared_feature.add(feature);
+				}
+				
 				continue;
 			}
 			candidate_featurePool.add(feature);
 			candidate_pool.addAll(fid_ne.get(feature));
+			staticBuffer.write("feature_id:"+feature+" feature_size:"+fid_ne.get(feature).size()+" feature:"+index_feature.get(feature));
+			staticBuffer.write("\n");
+			staticBuffer.flush();
+			//System.out.print("feature_id:"+feature+" feature_size:"+fid_ne.get(feature).size());
+			//System.out.println(" feature:"+index_feature.get(feature));
 		}
 	}
 
@@ -2414,6 +2429,8 @@ public class activeLearning_and_RF_multiplesRuns {
 			System.out.print(index_ne.get(iSeed) + ", ");
 		}
 		System.out.println();
+		
+		staticBuffer = new  BufferedWriter(new FileWriter(staticFile));
 
 		run_algorithms(file_output);
 		
