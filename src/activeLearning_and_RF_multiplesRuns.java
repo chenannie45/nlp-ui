@@ -94,7 +94,7 @@ public class activeLearning_and_RF_multiplesRuns {
 	//for inverted index
 	public static HashMap<Integer, HashSet<Integer>> fid_ne;
 	public static HashSet<Integer> candidate_featurePool;
-	public static HashSet<Integer> shared_feature = new HashSet<>();
+	public static HashSet<Integer> shared_feature = new HashSet<Integer>();
 	
 	public static File staticFile = new File("statstic_NLP_running");
 	public static BufferedWriter staticBuffer;
@@ -1941,12 +1941,14 @@ public class activeLearning_and_RF_multiplesRuns {
 				if(!shared_feature.contains(feature)){
 					System.out.println("the shared feature is " + feature + ": " + index_feature.get(feature));
 					shared_feature.add(feature);
+					System.out.println("similarity is " + ne_feature_logpmi.get(name).get(feature));
+					candidate_pool.addAll(fid_ne.get(feature));//only add the NEs that has shared features
 				}
 				
 				continue;
 			}
 			candidate_featurePool.add(feature);
-			candidate_pool.addAll(fid_ne.get(feature));
+//			candidate_pool.addAll(fid_ne.get(feature));
 			staticBuffer.write("feature_id:"+feature+" feature_size:"+fid_ne.get(feature).size()+" feature:"+index_feature.get(feature));
 			staticBuffer.write("\n");
 			staticBuffer.flush();
@@ -2412,7 +2414,6 @@ public class activeLearning_and_RF_multiplesRuns {
 		}
 
 		
-
 		System.out.println("# " + file_goldenset);
 		
 
