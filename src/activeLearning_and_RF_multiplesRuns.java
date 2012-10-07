@@ -94,7 +94,8 @@ public class activeLearning_and_RF_multiplesRuns {
 	//for inverted index
 	public static HashMap<Integer, HashSet<Integer>> fid_ne;
 	public static HashSet<Integer> candidate_featurePool;
-	public static HashSet<Integer> shared_feature = new HashSet<Integer>();
+//	public static HashSet<Integer> shared_feature = new HashSet<Integer>();
+	public static ArrayList<Ne_candidate> shared_feature = new ArrayList<Ne_candidate>();
 	
 	public static File staticFile = new File("statstic_NLP_running");
 	public static BufferedWriter staticBuffer;
@@ -1933,16 +1934,19 @@ public class activeLearning_and_RF_multiplesRuns {
 	}
 	
 	
-	public static void expand_candidate_pool(Integer name) throws IOException{
+	public static void expand_sharedfeature_pool(Integer name) throws IOException{
 		Iterator<Integer> fIterator	= ne_feature_logpmi.get(name).keySet().iterator();
 		while(fIterator.hasNext()){
 			int feature = fIterator.next();
 			if(candidate_featurePool.contains(feature)){
 				if(!shared_feature.contains(feature)){
 					System.out.println("the shared feature is " + feature + ": " + index_feature.get(feature));
-					shared_feature.add(feature);
+					Ne_candidate f_pmi = new Ne_candidate();
+					f_pmi.iNE = feature;
+					f_pmi.sim = ne_feature_logpmi.get(name).get(feature);
+					shared_feature.add(f_pmi);
 					System.out.println("similarity is " + ne_feature_logpmi.get(name).get(feature));
-					candidate_pool.addAll(fid_ne.get(feature));//only add the NEs that has shared features
+			//		candidate_pool.addAll(fid_ne.get(feature));//only add the NEs that has shared features
 				}
 				
 				continue;
@@ -1954,6 +1958,19 @@ public class activeLearning_and_RF_multiplesRuns {
 			staticBuffer.flush();
 			//System.out.print("feature_id:"+feature+" feature_size:"+fid_ne.get(feature).size());
 			//System.out.println(" feature:"+index_feature.get(feature));
+		}
+	}
+	
+	public static void construct_candidatepool(){
+		Collections.sort(shared_feature, Collections.reverseOrder());
+		for(int i = 0; i < shared_feature.size(); i++){
+			if(candidate_pool.size() < 10000){
+				candidate_pool.addAll(fid_ne.get(shared_feature.get(i).iNE));
+				System.out.println(index_feature.get(shared_feature.get(i).iNE) + " " + shared_feature.get(i).sim);
+			}
+			else{
+				break;
+			}
 		}
 	}
 
@@ -2045,19 +2062,21 @@ public class activeLearning_and_RF_multiplesRuns {
 			if(candidate_pool.isEmpty()) {
 
 				for (Integer ne_name: seeds[2]){
-					expand_candidate_pool(ne_name);
+					expand_sharedfeature_pool(ne_name);
 				}
 				
+				construct_candidatepool();
+				
 			}
-			else{///add the newly added name_correct and name_wrong 's relevant NE
-				if(name_correct[2]!=-1){
-					expand_candidate_pool(name_correct[2]);
-				}
-				if(name_wrong[2]!=-1){
-					expand_candidate_pool(name_wrong[2]);
-				}
-					
-			}
+//			else{///add the newly added name_correct and name_wrong 's relevant NE
+//				if(name_correct[2]!=-1){
+//					expand_candidate_pool(name_correct[2]);
+//				}
+//				if(name_wrong[2]!=-1){
+//					expand_candidate_pool(name_wrong[2]);
+//				}
+//					
+//			}
 			System.out.println("the size of candidate pool is " + candidate_pool.size());
 			System.out.println("the size of candidate feature pool is " + candidate_featurePool.size());
 
