@@ -97,7 +97,8 @@ public class activeLearning_and_RF_multiplesRuns {
 	public static HashSet<Integer> candidate_featurePool;
 //	public static HashSet<Integer> shared_feature = new HashSet<Integer>();
 	public static ArrayList<Ne_candidate> shared_feature = new ArrayList<Ne_candidate>();
-	public static HashSet<Integer> shared_featureSet = new HashSet<Integer>();
+	public static HashMap<Integer,Integer> shared_featureSet = new HashMap<Integer,Integer>();
+	public static HashMap<Integer, Integer> shared_featurePos = new HashMap<Integer,Integer>();
 	
 	public static File staticFile = new File("statstic_NLP_running");
 	public static BufferedWriter staticBuffer;
@@ -1954,15 +1955,25 @@ public class activeLearning_and_RF_multiplesRuns {
 		while(fIterator.hasNext()){
 			int feature = fIterator.next();
 			if(candidate_featurePool.contains(feature)){
-				if(!shared_featureSet.contains(feature)){
+				if(!shared_featureSet.keySet().contains(feature)){
 					System.out.println("the shared feature is " + feature + ": " + index_feature.get(feature));
 					Ne_candidate f_pmi = new Ne_candidate();
 					f_pmi.iNE = feature;
 					f_pmi.sim = ne_feature_logpmi.get(name).get(feature);
+					
+					shared_featurePos.put(feature, shared_feature.size());
 					shared_feature.add(f_pmi);
-					shared_featureSet.add(feature);
+					shared_featureSet.put(feature, 1);
 					System.out.println("similarity is " + ne_feature_logpmi.get(name).get(feature));
 			//		candidate_pool.addAll(fid_ne.get(feature));//only add the NEs that has shared features
+				}
+				else{
+					int times = shared_featureSet.get(feature)+1;
+					shared_featureSet.remove(feature);
+					shared_featureSet.put(feature, times);
+					int position = shared_featurePos.get(feature);
+					double curAvg = shared_feature.get(position).sim;
+					shared_feature.get(position).sim = (curAvg*(times-1)+ne_feature_logpmi.get(name).get(feature))/times;
 				}
 				
 				continue;
@@ -2412,7 +2423,8 @@ public class activeLearning_and_RF_multiplesRuns {
 		positive_pool = new HashSet<Integer>();
 		negative_pool = new HashSet<Integer>();
 		shared_feature = new ArrayList<Ne_candidate>();
-		shared_featureSet = new HashSet<Integer>();
+		shared_featureSet = new HashMap<Integer,Integer>();
+		shared_featurePos = new HashMap<Integer,Integer>();
 		
 	}
 
