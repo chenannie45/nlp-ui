@@ -97,6 +97,7 @@ public class activeLearning_and_RF_multiplesRuns {
 	public static HashSet<Integer> candidate_featurePool;
 //	public static HashSet<Integer> shared_feature = new HashSet<Integer>();
 	public static ArrayList<Ne_candidate> shared_feature = new ArrayList<Ne_candidate>();
+	public static HashSet<Integer> shared_featureSet = new HashSet<Integer>();
 	
 	public static File staticFile = new File("statstic_NLP_running");
 	public static BufferedWriter staticBuffer;
@@ -276,7 +277,7 @@ public class activeLearning_and_RF_multiplesRuns {
 					 */
 				}
 
-				if(items[2]=="NaN")
+				if(items[2].equals("NaN"))
 					continue;
 				// 
 
@@ -510,7 +511,7 @@ public class activeLearning_and_RF_multiplesRuns {
 				}
 			}
 			mainFrame.setTopRankSeedList(pList);
-			mainFrame.setPrecision(String.valueOf(validNE*1.0/20));
+			mainFrame.setPrecision(String.valueOf(validNE*1.0/20*100)+"%");
 		}
 		
 		System.out.println("20 top ranked NE are:");
@@ -1953,12 +1954,13 @@ public class activeLearning_and_RF_multiplesRuns {
 		while(fIterator.hasNext()){
 			int feature = fIterator.next();
 			if(candidate_featurePool.contains(feature)){
-				if(!shared_feature.contains(feature)){
+				if(!shared_featureSet.contains(feature)){
 					System.out.println("the shared feature is " + feature + ": " + index_feature.get(feature));
 					Ne_candidate f_pmi = new Ne_candidate();
 					f_pmi.iNE = feature;
 					f_pmi.sim = ne_feature_logpmi.get(name).get(feature);
 					shared_feature.add(f_pmi);
+					shared_featureSet.add(feature);
 					System.out.println("similarity is " + ne_feature_logpmi.get(name).get(feature));
 			//		candidate_pool.addAll(fid_ne.get(feature));//only add the NEs that has shared features
 				}
@@ -1978,7 +1980,7 @@ public class activeLearning_and_RF_multiplesRuns {
 	public static void construct_candidatepool(){
 		Collections.sort(shared_feature, Collections.reverseOrder());
 		for(int i = 0; i < shared_feature.size(); i++){
-			if(candidate_pool.size() < 10000){
+			if(candidate_pool.size() < 15000){
 				candidate_pool.addAll(fid_ne.get(shared_feature.get(i).iNE));
 				System.out.println(index_feature.get(shared_feature.get(i).iNE) + " " + shared_feature.get(i).sim);
 			}
@@ -2410,6 +2412,7 @@ public class activeLearning_and_RF_multiplesRuns {
 		positive_pool = new HashSet<Integer>();
 		negative_pool = new HashSet<Integer>();
 		shared_feature = new ArrayList<Ne_candidate>();
+		shared_featureSet = new HashSet<Integer>();
 		
 	}
 
