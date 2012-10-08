@@ -40,6 +40,7 @@ public class activeLearning_and_RF_multiplesRuns {
 	/*
 	 * used by ui
 	 */
+	public static boolean deadFlag = false;
 	public static boolean nextIterBegain;
 
 	// Expo: exponentially
@@ -489,11 +490,27 @@ public class activeLearning_and_RF_multiplesRuns {
 		
 		if(exper_no == 3){
 			List<String> pList = new ArrayList<String>();
-			for(int j = 0; j < 20; j++){
+			int count = 0;
+			int validNE = 0;
+			for(int j = 0; j < 100; j++){
+				int theNE = words_sim.get(j).iNE;
+				if(set_wrong[2].contains(theNE)||negative_pool.contains(theNE)){
+					continue;
+				}
+				
 				String format_neString = edit_stringformat(index_ne.get(words_sim.get(j).iNE));
 				pList.add(format_neString);
+				if(goldenset.contains(theNE)){
+					validNE++;
+				}
+				
+				count++;
+				if(count == 20){
+					break;
+				}
 			}
 			mainFrame.setTopRankSeedList(pList);
+			mainFrame.setPrecision(String.valueOf(validNE*1.0/20));
 		}
 		
 		System.out.println("20 top ranked NE are:");
@@ -524,9 +541,6 @@ public class activeLearning_and_RF_multiplesRuns {
 			out_list.write("\n");
 
 			map_p.put(i, new Double(1.0*valid/i));
-			if(i == seeds[2].size()+20){
-				mainFrame.setPrecision(String.valueOf(1.0*(valid-seeds[2].size())/20*100)+"%");
-			}
 			
 		}
 
@@ -2202,6 +2216,8 @@ public class activeLearning_and_RF_multiplesRuns {
 			while(true){
 				if(nextIterBegain){
 					break;
+				}else if(deadFlag){
+					return;
 				}
 				try {
 					Thread.sleep(100);
@@ -2388,6 +2404,14 @@ public class activeLearning_and_RF_multiplesRuns {
 		return tmpString2;	
 	}
 	
+	
+	public static void restartSettings(){
+		
+		positive_pool = new HashSet<Integer>();
+		negative_pool = new HashSet<Integer>();
+		shared_feature = new ArrayList<Ne_candidate>();
+		
+	}
 
 
 	public static void main(String[] arg) throws InterruptedException, IOException {

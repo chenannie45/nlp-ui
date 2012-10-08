@@ -15,9 +15,9 @@ public class MainFrame extends JFrame {
 	private TopPanel topPanel = new TopPanel();
 	private CenterPanel centerPanel = new CenterPanel();
 	
-	public MainFrame(){
 		
 		BorderLayout panelManager = new BorderLayout();
+		public MainFrame(){
 		panelManager.setVgap(15);
 		panel.setLayout(panelManager);
 		this.getContentPane().add(panel);

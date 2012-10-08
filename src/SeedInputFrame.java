@@ -70,6 +70,7 @@ class SeedInputFrame extends JFrame {
 							num++;
 						}
 						try {
+							activeLearning_and_RF_multiplesRuns.deadFlag = false;
 							activeLearning_and_RF_multiplesRuns.main(args);
 						} 
 						catch (InterruptedException e){

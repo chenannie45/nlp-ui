@@ -4,8 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -36,6 +39,7 @@ class CenterPanel extends JPanel {
 	JPanel rightBottomPanel = new JPanel();
 	JLabel precisionLabel = new JLabel("Precision:");
 	JTextField precisionField = new JTextField();
+	JButton restartButton = new JButton("Restart");
 	
 	
 	
@@ -48,6 +52,7 @@ class CenterPanel extends JPanel {
 		this.add(northPanel, BorderLayout.NORTH);
 		this.add(centerPanel,BorderLayout.CENTER);
 		
+		setActionListener();
 	}
 
 	private void setupNorthPanel() {
@@ -77,18 +82,41 @@ class CenterPanel extends JPanel {
 		rightPanel.setLayout(new BorderLayout());
 		rightPanel.add(topRankListPanel, BorderLayout.CENTER);
 		rightPanel.add(rightBottomPanel, BorderLayout.SOUTH);
+	
 		
-		rightBottomPanel.setLayout(new BoxLayout(rightBottomPanel, BoxLayout.Y_AXIS));
-		rightBottomPanel.add(precisionLabel);
-		rightBottomPanel.add(precisionField);
+		JPanel precisionPanel = new JPanel();
+		precisionPanel.setLayout(new BoxLayout(precisionPanel, BoxLayout.Y_AXIS));
+		precisionPanel.add(precisionLabel);
+		precisionPanel.add(precisionField);
+		rightBottomPanel.setLayout(new BorderLayout());
+		rightBottomPanel.add(precisionPanel, BorderLayout.CENTER);
+		JPanel restartPanel = new JPanel();
+		restartPanel.setLayout(new BorderLayout());
+		restartPanel.add(restartButton, BorderLayout.SOUTH);	
+		rightBottomPanel.add(restartPanel, BorderLayout.EAST);
 		
+		restartButton.setFont(ftlabel);
 		precisionField.setFont(ftContent);
 		precisionLabel.setFont(ftlabel);
 	}
 
 
+	private void setActionListener() {
+		restartButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				activeLearning_and_RF_multiplesRuns.deadFlag = true;
+				activeLearning_and_RF_multiplesRuns.restartSettings();
+				activeLearning_and_RF_multiplesRuns.mainFrame.setVisible(false);
+				activeLearning_and_RF_multiplesRuns.mainFrame = null;
+				MainFrame mainFrame = new MainFrame();
+				activeLearning_and_RF_multiplesRuns.mainFrame = mainFrame;
+				mainFrame.setVisible(true);
+				
+			}
+		});
+	}
 
-
-	
 	
 }
